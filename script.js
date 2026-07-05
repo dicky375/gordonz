@@ -96,29 +96,17 @@ function drawMergedImage() {
     ctx.drawImage(templateImg, 0, 0);
 
     if (userImg) {
-        const baseScale = Math.max(frameWidth / userImg.width, frameHeight / userImg.height);
+        const baseScale = Math.min(canvas.width / userImg.width, canvas.height / userImg.height);
         const scale = baseScale * userScale;
 
         const drawWidth = userImg.width * scale;
         const drawHeight = userImg.height * scale;
 
-        // How much the image overhangs the frame on each axis
-        const maxOffsetX = Math.max(0, (drawWidth - frameWidth) / 2);
-        const maxOffsetY = Math.max(0, (drawHeight - frameHeight) / 2);
+        // Center on canvas by default, then apply free drag offset
+        const x = (canvas.width / 2) - (drawWidth / 2) + userOffsetX;
+        const y = (canvas.height / 2) - (drawHeight / 2) + userOffsetY;
 
-        // Clamp offsets so the image always fully covers the frame
-        userOffsetX = Math.min(Math.max(userOffsetX, -maxOffsetX), maxOffsetX);
-        userOffsetY = Math.min(Math.max(userOffsetY, -maxOffsetY), maxOffsetY);
-
-        const x = frameX + (frameWidth / 2) - (drawWidth / 2) + userOffsetX;
-        const y = frameY + (frameHeight / 2) - (drawHeight / 2) + userOffsetY;
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(frameX, frameY, frameWidth, frameHeight);
-        ctx.clip();
         ctx.drawImage(userImg, x, y, drawWidth, drawHeight);
-        ctx.restore();
     }
 }
 canvas.addEventListener('touchstart', function(e){
