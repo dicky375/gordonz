@@ -22,6 +22,28 @@ let isDragging = false;
 let dragStartX = 0;
 let dragStartY = 0;
 
+// --Touch support (mobile)
+let lastTouchDistance = null; // for pinch-to-zoom
+let touchDragStartX = 0;
+let touchDragStartY = 0;
+
+function getTouchDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+
+}
+
+function getCanvasCoords(touch) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (touch.clientX - rect.left) * (canvas.width / rect.width),
+        y: (touch.clientY - rect.top) * (canvas.height / rect.height)
+    };
+}
+
+
+
 // --- Template upload ---
 templateLoader.addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -99,6 +121,49 @@ function drawMergedImage() {
         ctx.restore();
     }
 }
+canvas.addEventListener('touchstart', function(e){
+    if (!userImg) return;
+    e.preventDefault();
+
+    if (e.touch.length === 1) {
+        // Single finger = drag
+        const pos = getCanvasCoords(e.touches[0]);
+        touchDragStartX = pos.x - userOffsetX;
+        touchDragStartY = pos.y - userOffsetY;
+        isDragging = true;
+    } else if (e.touches.length === 2) {
+        //Two fingers = pinch zoom , stop dragging
+        isDragging = false;
+        lastTouchDistance = getTouchDistance(e.touches);
+    }
+}, {passive: false });
+
+canvas.addEventListener('touchmove', function(e) {
+    if (!userImg) return;
+    e.preventDefault();
+
+    if (e.touches.length ===1 && isDragging) {
+        const pos = getCanvasCoords(e.touches[0]);
+        userOffsetX = pos.x - touchDragStartX;
+        userOffsetY = pos.y - touchDragStartY;
+        drawMergedImage();
+    } else if (e.touches.length === 2) {
+        const newDistance = getTouchDistance(e.touches);
+        if (lastTouchDistance !== null) {
+            const delta = newDistance - lastTouchDistance;
+            userScale += delta * 0.005;
+            userScale = Math.min(Math.max(userScale, 0.2), 5);
+            drawMergedImage();
+        }
+        lastTouchDistance = newDistance;
+    }
+}, {passive: false});
+
+canvas.addEventListener('touchend', function(e) {
+    isDragging = false;
+    lastTouchDistance = null;
+
+}, {passive: false});
 
 // --- Dragging (mouse) ---
 canvas.addEventListener('mousedown', function(e) {
