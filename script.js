@@ -153,6 +153,12 @@ canvas.addEventListener('touchend', function(e) {
 
 }, {passive: false});
 
+canvas.addEventListener('touchcancel', function(e){
+    isDragging = false;
+    lastTouchDistance = null;
+
+}, {passive: false})
+
 // --- Dragging (mouse) ---
 canvas.addEventListener('mousedown', function(e) {
     if (!userImg) return;
