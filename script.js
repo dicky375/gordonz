@@ -83,9 +83,7 @@ imageLoader.addEventListener('change', function(e) {
 function drawMergedImage() {
     if (!templateImg) return;
 
-    // 1. Base layer: the flyer
-    ctx.drawImage(templateImg, 0, 0);
-
+    // 1. Photo goes down FIRST (bottom layer)
     if (userImg) {
         const baseScale = Math.min(canvas.width / userImg.width, canvas.height / userImg.height);
         const scale = baseScale * userScale;
@@ -96,20 +94,12 @@ function drawMergedImage() {
         const x = (canvas.width / 2) - (drawWidth / 2) + userOffsetX;
         const y = (canvas.height / 2) - (drawHeight / 2) + userOffsetY;
 
-        // 2. Middle layer: user's photo, drawn freely (unchanged)
         ctx.drawImage(userImg, x, y, drawWidth, drawHeight);
-
-        // 3. Top layer: redraw the flyer artwork EXCEPT the inner photo window,
-        // so the frame, header logos, and "SHEMEN OIL" text always stay visible
-        // on top of the photo, wherever it's dragged.
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, 0, canvas.width, canvas.height);          // outer boundary: whole canvas
-        ctx.rect(frameX, frameY, frameWidth, frameHeight);    // inner cutout: the photo window
-        ctx.clip('evenodd');                                  // clips to everything OUTSIDE the cutout
-        ctx.drawImage(templateImg, 0, 0);
-        ctx.restore();
     }
+
+    // 2. Flyer artwork goes SECOND (top layer) — text, frame, "SHEMEN OIL" 
+    // all sit on top; transparent hole reveals the photo underneath
+    ctx.drawImage(templateImg, 0, 0);
 }
 canvas.addEventListener('touchstart', function(e){
     if (!userImg) return;
