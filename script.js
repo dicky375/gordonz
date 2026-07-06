@@ -54,7 +54,7 @@ templateImg.onload = function() {
 templateImg.onerror = function() {
     alert('Could not load the flyer template. Check that flyer-template.png is in the project folder.');
 };
-templateImg.src = 'flyer-template-transparent.png';
+templateImg.src = 'flyer-template-no-shemen-text.png';
 // --- User photo upload ---
 imageLoader.addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -84,20 +84,37 @@ function drawMergedImage() {
     if (!templateImg) return;
 
     if (userImg) {
-        // CONTAIN fit: shrink the whole photo to fit inside the frame, nothing cropped
-        const baseScale = Math.min(frameWidth / userImg.width, frameHeight / userImg.height);
+        const baseScale = Math.max(frameWidth / userImg.width, frameHeight / userImg.height);
         const scale = baseScale * userScale;
-
         const drawWidth = userImg.width * scale;
         const drawHeight = userImg.height * scale;
-
         const x = (canvas.width / 2) - (drawWidth / 2) + userOffsetX;
         const y = (canvas.height / 2) - (drawHeight / 2) + userOffsetY;
-
         ctx.drawImage(userImg, x, y, drawWidth, drawHeight);
     }
 
     ctx.drawImage(templateImg, 0, 0);
+
+    // Draw "SHEMEN OIL" as live text, always on top, always crisp
+    ctx.save();
+    ctx.font = 'bold 90px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Approximate gold gradient
+    const gradient = ctx.createLinearGradient(0, 380, 0, 480);
+    gradient.addColorStop(0, '#fff4c2');
+    gradient.addColorStop(0.5, '#d4af37');
+    gradient.addColorStop(1, '#8a6d1f');
+
+    ctx.fillStyle = gradient;
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 4;
+    ctx.fillText('SHEMEN', canvas.width / 2, 400);
+    ctx.font = 'bold 55px Georgia, serif';
+    ctx.fillText('(OIL)', canvas.width / 2, 480);
+    ctx.restore();
 }
 canvas.addEventListener('touchstart', function(e){
     if (!userImg) return;
