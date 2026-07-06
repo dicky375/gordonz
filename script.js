@@ -66,8 +66,8 @@ imageLoader.addEventListener('change', function(e) {
         userImg.onload = function() {
             // Reset transform each time a new photo is loaded
             userScale = 1;
-            userOffsetX = 0;
-            userOffsetY = 0;
+            userOffsetX = (frameX + frameWidth / 2) - (canvas.width / 2);
+            userOffsetY = (frameY + frameWidth / 2) - (canvas.height / 2);
             drawMergedImage();
             downloadBtn.disabled = false;
         };
@@ -79,11 +79,11 @@ imageLoader.addEventListener('change', function(e) {
     reader.readAsDataURL(file);
 }, false);
 
+
 // --- Draw everything ---
 function drawMergedImage() {
-    if (!templateImg) return;
+   if (!templateImg) return;
 
-    // 1. Photo goes down FIRST (bottom layer)
     if (userImg) {
         const baseScale = Math.max(frameWidth / userImg.width, frameHeight / userImg.height);
         const scale = baseScale * userScale;
@@ -97,9 +97,15 @@ function drawMergedImage() {
         ctx.drawImage(userImg, x, y, drawWidth, drawHeight);
     }
 
-    // 2. Flyer artwork goes SECOND (top layer) — text, frame, "SHEMEN OIL" 
-    // all sit on top; transparent hole reveals the photo underneath
     ctx.drawImage(templateImg, 0, 0);
+}
+userImg.onload = function(){
+    userScale = 1;
+    //Center default position on the frame. not the canvas
+     userOffsetX = (frameX + frameWidth / 2) - (canvas.width / 2);
+    userOffsetY = (frameY + frameHeight / 2) - (canvas.height / 2);
+    drawMergedImage();
+    downloadBtn.disabled = false;
 }
 canvas.addEventListener('touchstart', function(e){
     if (!userImg) return;
