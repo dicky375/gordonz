@@ -45,26 +45,16 @@ function getCanvasCoords(touch) {
 
 
 // --- Template upload ---
-templateLoader.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        templateImg = new Image();
-        templateImg.onload = function() {
-            canvas.width = templateImg.width;
-            canvas.height = templateImg.height;
-            drawMergedImage();
-        };
-        templateImg.onerror = function() {
-            alert('Could not load that flyer image. Try a different file.');
-        };
-        templateImg.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-}, false);
-
+templateImg = new Image();
+templateImg.onload = function() {
+    canvas.width = templateImg.width;
+    canvas.height = templateImg.height;
+    drawMergedImage();
+};
+templateImg.onerror = function() {
+    alert('Could not load the flyer template. Check that flyer-template.png is in the project folder.');
+};
+templateImg.src = 'flyer-template.png';
 // --- User photo upload ---
 imageLoader.addEventListener('change', function(e) {
     const file = e.target.files[0];

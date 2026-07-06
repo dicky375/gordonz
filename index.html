@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shemen Oil Experience - Add Your Photo</title>
-    <style rel="stylesheet" href="style.css">
+    <style >
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f9;
@@ -13,8 +13,6 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            touch-action: none;
-            overscroll-behavior: none;
         }
         h1 {
             color: #1a1a1a;
@@ -61,10 +59,11 @@
             border-radius: 5px;
             margin-bottom: 20px;
         }
-        #imageCanvas {
-            touch-action: none;
+       @media (max-width: 600px) {
+        canvas {
+            max-height:  65vh;
         }
-
+       }
     </style>
 </head>
 <body>
@@ -72,8 +71,6 @@
     <div class="container">
         <h1>Join the Shemen Experience</h1>
         <p>Upload your picture below to generate your personalized flyer.</p>
-        <input type="file" id="templateLoader" accept="image/*">
-        
         <input type="file" id="imageLoader" accept="image/*" />
         
         <!-- The canvas where the images are merged -->
