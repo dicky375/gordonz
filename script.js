@@ -64,13 +64,13 @@ imageLoader.addEventListener('change', function(e) {
     reader.onload = function(event) {
         userImg = new Image();
         userImg.onload = function() {
-            // Reset transform each time a new photo is loaded
-            userScale = 1;
-            userOffsetX = (frameX + frameWidth / 2) - (canvas.width / 2);
-            userOffsetY = (frameY + frameWidth / 2) - (canvas.height / 2);
-            drawMergedImage();
-            downloadBtn.disabled = false;
-        };
+    userScale = 1;
+    // Center default position on the FRAME, not the canvas
+    userOffsetX = (frameX + frameWidth / 2) - (canvas.width / 2);
+    userOffsetY = (frameY + frameHeight / 2) - (canvas.height / 2);
+    drawMergedImage();
+    downloadBtn.disabled = false;
+};
         userImg.onerror = function() {
             alert('Could not load that photo. Try a different file.');
         };
@@ -98,14 +98,6 @@ function drawMergedImage() {
     }
 
     ctx.drawImage(templateImg, 0, 0);
-}
-userImg.onload = function(){
-    userScale = 1;
-    //Center default position on the frame. not the canvas
-     userOffsetX = (frameX + frameWidth / 2) - (canvas.width / 2);
-    userOffsetY = (frameY + frameHeight / 2) - (canvas.height / 2);
-    drawMergedImage();
-    downloadBtn.disabled = false;
 }
 canvas.addEventListener('touchstart', function(e){
     if (!userImg) return;
