@@ -65,7 +65,6 @@ imageLoader.addEventListener('change', function(e) {
         userImg = new Image();
         userImg.onload = function() {
     userScale = 1;
-    // Center default position on the FRAME, not the canvas
     userOffsetX = (frameX + frameWidth / 2) - (canvas.width / 2);
     userOffsetY = (frameY + frameHeight / 2) - (canvas.height / 2);
     drawMergedImage();
@@ -82,10 +81,11 @@ imageLoader.addEventListener('change', function(e) {
 
 // --- Draw everything ---
 function drawMergedImage() {
-   if (!templateImg) return;
+    if (!templateImg) return;
 
     if (userImg) {
-        const baseScale = Math.max(frameWidth / userImg.width, frameHeight / userImg.height);
+        // CONTAIN fit: shrink the whole photo to fit inside the frame, nothing cropped
+        const baseScale = Math.min(frameWidth / userImg.width, frameHeight / userImg.height);
         const scale = baseScale * userScale;
 
         const drawWidth = userImg.width * scale;
