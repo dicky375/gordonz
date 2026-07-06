@@ -85,7 +85,7 @@ function drawMergedImage() {
 
     // 1. Photo goes down FIRST (bottom layer)
     if (userImg) {
-        const baseScale = Math.min(canvas.width / userImg.width, canvas.height / userImg.height);
+        const baseScale = Math.max(frameWidth / userImg.width, frameHeight / userImg.height);
         const scale = baseScale * userScale;
 
         const drawWidth = userImg.width * scale;
