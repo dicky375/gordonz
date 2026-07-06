@@ -54,7 +54,7 @@ templateImg.onload = function() {
 templateImg.onerror = function() {
     alert('Could not load the flyer template. Check that flyer-template.png is in the project folder.');
 };
-templateImg.src = 'flyer-template.png';
+templateImg.src = 'flyer-template-transparent.png';
 // --- User photo upload ---
 imageLoader.addEventListener('change', function(e) {
     const file = e.target.files[0];
